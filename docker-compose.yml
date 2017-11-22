@@ -12,7 +12,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.0.0
     build:
-      #context: ./gpumetrics
+      context: ./
       dockerfile: Dockerfile
     volumes:
       - ./prometheus/:/etc/prometheus/
