@@ -9,11 +9,22 @@ networks:
   back-tier:
 
 services:
-  prometheus:
-    image: prom/prometheus:v2.0.0
+ 
+  pushgateway:
+    image: prom/pushgateway
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.pushgateway
+    ports:
+      - 9091:9091
+    networks:
+      - back-tier
+
+  prometheus:
+    image: prom/prometheus
+    #build:
+    #  context: ./
+    #  dockerfile: Dockerfile.prometheus
     volumes:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
@@ -27,9 +38,9 @@ services:
     devices:
       - /dev/nvidia0
     links:
-      - metrics-gateway
+      - pushgateway
     depends_on:
-      - metrics-gateway
+      - pushgateway
     networks:
       - back-tier
     restart: always
@@ -38,14 +49,11 @@ services:
         #constraints:
         #  - node.hostname == moby
 
- 
-  metrics-gateway:
-    image: prom/pushgateway
-    ports:
-      - 9091:9091
-
   grafana:
     image: grafana/grafana
+    #build:
+     ## context: ./
+    #  dockerfile: Dockerfile.grafana
     depends_on:
       - prometheus
     ports:
@@ -56,4 +64,4 @@ services:
       - config.monitoring
     networks:
       - back-tier
-      #- front-tier
+      - front-tier

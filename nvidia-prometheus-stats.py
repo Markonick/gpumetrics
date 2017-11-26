@@ -46,7 +46,8 @@ def _create_parser():
 def main():
     parser = _create_parser()
     args = parser.parse_args()
-    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
+    logging.basicConfig(level=logging.DEBUG )
+    #logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
    
     registry = core.REGISTRY
 
